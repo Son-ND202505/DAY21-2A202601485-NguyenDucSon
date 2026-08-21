@@ -1,0 +1,23 @@
+{
+  "domain": "clinic_appointment",
+  "tier": "T4",
+  "model": "unsloth/Qwen3.5-4B",
+  "baseline_a": {
+    "target": 0.0,
+    "regression": 0.7244444444444444,
+    "format": 0.0,
+    "latency_ms": 2255.2088912800173,
+    "n": 50,
+    "extra": {}
+  },
+  "baseline_b": {
+    "target": 0.83,
+    "regression": 0.7244444444444444,
+    "format": 1.0,
+    "latency_ms": 726.2646215999121,
+    "n": 50,
+    "extra": {}
+  },
+  "n_target": 50,
+  "n_regression": 15
+}

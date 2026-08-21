@@ -245,7 +245,31 @@ là quên thảm hoạ chứ không phải lỗi cấu hình LoRA.
 ## Phụ lục — thưởng đã làm
 
 - [x] B1 NB6 merge + hot-swap — `results/merge_check.json`: before=0.975, after=0.975, Δ=0.000 (tolerance 0.01); hot-swap thử cả 3 adapter (`correct`, `attn_only`, `qlora`), cùng ticket cho ra 3 kết quả nhất quán
-- [ ] B2 dataset miền riêng (`data/CUSTOM_DATASET.md`)
+- [x] B2 dataset miền riêng — domain hoàn toàn khác corpus mặc định: **ticket đặt lịch
+  khám phòng khám** thay vì CSKH thương mại điện tử (intent khác hẳn: `dat_lich_moi |
+  doi_lich | huy_lich | hoi_bao_hiem | hoi_dich_vu`; `product` đổi nghĩa thành dịch vụ
+  y tế). 250 train + 50 eval_target + 20 holdout = 320 mẫu tổng hợp theo quy tắc, seed
+  cố định, decontamination check PASSED. Mô tả đầy đủ nguồn/khử nhiễu ở
+  `data/CUSTOM_DATASET.md`. Chạy full baseline (a)/(b) + train `correct`-tương-đương +
+  đánh giá 4 nhóm trên domain này (`results/custom_domain/`), hoàn toàn tách biệt khỏi
+  corpus/kết quả đã chấm ở trên:
+
+  | Run | target | regression | format | latency (ms) |
+  |---|---|---|---|---|
+  | (a) base + naive prompt | 0.000 | 0.7244 | 0.000 | 2255.2 |
+  | (b) base + optimized prompt (riêng cho domain này) | 0.830 | 0.7244 | 1.000 | 726.3 |
+  | (c) LoRA fine-tune (`correct` config, 32 step) | **1.000** | **0.1333** | 1.000 | 958.9 |
+
+  **Verdict: FAILED** — *"general capability regressed by 0.591 (tolerance 0.020)"*.
+  Đáng chú ý: domain mới cho target **hoàn hảo tuyệt đối** (1.000, tốt hơn cả 0.975 của
+  corpus gốc) nhưng regression sập nặng hơn nhiều — **−0.591** so với **−0.147** ở
+  corpus gốc, dù cùng cấu hình LoRA, cùng epoch, số step gần như y hệt (32 so với 30, vì
+  250 mẫu train ở đây không bị NB1 tách 25 mẫu val như corpus gốc). Đây là bằng chứng
+  chéo-domain củng cố thêm cho kết luận ở mục 5: mức độ quên thảm hoạ không phải hằng số
+  của LoRA nói chung, mà phụ thuộc mạnh vào **độ hẹp/đơn điệu của tập train** — domain
+  khám bệnh có vốn từ vựng và cấu trúc câu đơn điệu hơn (ít biến thể mở đầu, ít loại sản
+  phẩm) so với corpus e-commerce gốc, nên model "chuyên biệt hoá" nhanh và sâu hơn, trả
+  giá đắt hơn ở năng lực tổng quát dù đạt target cao hơn.
 - [x] B3 reasoning-trace collapse — corpus mặc định ship câu trả lời JSON trần (không có
   `<think>` thật), nên `response-only`/`masked-think` vốn là no-op trên nó (đúng như cảnh
   báo trong `.env.example`). Để thực sự làm thí nghiệm, tôi tạo một bản sao 225 dòng train
@@ -301,4 +325,5 @@ là quên thảm hoạ chứ không phải lỗi cấu hình LoRA.
   đã có đủ dung lượng tham số tối thiểu để biểu diễn tác vụ, tăng thêm rank mang lại
   lợi ích biên giảm dần và đến một điểm là đang mua thêm khả năng ghi nhớ tập train hơn
   là năng lực thật.
-- [ ] B5 HuggingFace Hub — link:
+- [x] B5 HuggingFace Hub — public: https://huggingface.co/Son-ND202505/day21-triage-lora-correct
+  (adapter `correct` — text-linear r=16, LR=1e-4, target=0.975 trên corpus mặc định)

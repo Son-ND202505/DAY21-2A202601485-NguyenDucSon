@@ -1,0 +1,42 @@
+{
+  "domain": "clinic_appointment",
+  "comparison": [
+    {
+      "run": "(a) base + naive prompt",
+      "target": 0.0,
+      "regression": 0.7244,
+      "format": 0.0,
+      "latency_ms": 2255.2,
+      "n": 50
+    },
+    {
+      "run": "(b) base + optimized prompt",
+      "target": 0.83,
+      "regression": 0.7244,
+      "format": 1.0,
+      "latency_ms": 726.3,
+      "n": 50
+    },
+    {
+      "run": "(c) LoRA fine-tune",
+      "target": 1.0,
+      "regression": 0.1333,
+      "format": 1.0,
+      "latency_ms": 958.9,
+      "n": 50
+    }
+  ],
+  "verdict": {
+    "passed": false,
+    "reasons": [
+      "general capability regressed by 0.591 (tolerance 0.020). See deck §14.3 — add 1-5% replay data."
+    ],
+    "target_delta": 0.17000000000000004,
+    "regression_delta": -0.5911111111111111
+  },
+  "trainable_params": 32464896,
+  "final_loss": 0.3424,
+  "train_seconds": 725.3,
+  "max_steps": 32,
+  "peak_vram_gb": 8.29150104522705
+}
